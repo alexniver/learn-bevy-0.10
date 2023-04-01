@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 
-pub mod event;
 mod system;
 
 mod enemy;
@@ -14,20 +13,27 @@ use score::ScorePlugin;
 use star::StarPlugin;
 use system::*;
 
-use self::{event::GameOver, score::comp::Score};
+use crate::AppState;
+
+use self::score::comp::Score;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut bevy::prelude::App) {
-        app.init_resource::<Score>()
-            .add_event::<GameOver>()
-            .add_startup_system(spawn_camera)
+        app.add_state::<InGameState>()
+            .init_resource::<Score>()
             .add_plugin(EnemyPlugin)
             .add_plugin(PlayerPlugin)
             .add_plugin(ScorePlugin)
             .add_plugin(StarPlugin)
-            .add_system(exit_game)
-            .add_system(handle_game_over);
+            .add_system(toggle_in_game_state.run_if(in_state(AppState::Game)));
     }
+}
+
+#[derive(States, Default, Hash, PartialEq, Eq, Clone, Copy, Debug)]
+pub enum InGameState {
+    #[default]
+    Paused,
+    Running,
 }

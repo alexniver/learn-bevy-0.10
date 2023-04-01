@@ -2,9 +2,9 @@ use bevy::{prelude::*, window::PrimaryWindow};
 
 use super::comp::*;
 use super::consts::*;
+use crate::event::*;
 use crate::game::enemy::comp::*;
 use crate::game::enemy::consts::*;
-use crate::game::event::*;
 use crate::game::score::comp::*;
 use crate::game::star::comp::*;
 use crate::game::star::consts::*;
@@ -28,6 +28,12 @@ pub fn spawn_player(
         },
         Player {},
     ));
+}
+
+pub fn despawn_player(mut commands: Commands, player_query: Query<Entity, With<Player>>) {
+    for entity in player_query.iter() {
+        commands.entity(entity).despawn();
+    }
 }
 
 pub fn player_movement(

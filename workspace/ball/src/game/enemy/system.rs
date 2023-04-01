@@ -27,6 +27,12 @@ pub fn spawn_enemy(
     }
 }
 
+pub fn despawn_enemies(mut commands: Commands, enemy_query: Query<Entity, With<Enemy>>) {
+    for entity in enemy_query.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
 pub fn update_enemy_timer(mut timer: ResMut<EnemySpawnTimer>, time: Res<Time>) {
     timer.timer.tick(time.delta());
 }
